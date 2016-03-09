@@ -1,5 +1,10 @@
 {
   "apps": [
-
+    {
+      "serverURL": "templetrip-server.herokuapp.com",
+      "appId": "JUJurzhFM1UwVK1cY0JHyyJCw17ai5QH1cJ5F880",
+      "masterKey": "u7mJA3zEpVNY6zZ0yVkvkGu8HSlKWJ3bI8HflVzk",
+      "appName": "TempleTrip Server"
+    }
   ]
 }
