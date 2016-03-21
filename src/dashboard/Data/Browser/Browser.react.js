@@ -28,6 +28,7 @@ import SidebarAction                      from 'components/Sidebar/SidebarAction
 import stringCompare                      from 'lib/stringCompare';
 import styles                             from 'dashboard/Data/Browser/Browser.scss';
 import subscribeTo                        from 'lib/subscribeTo';
+import * as ColumnPreferences             from 'lib/ColumnPreferences';
 
 @subscribeTo('Schema', 'schema')
 export default class Browser extends DashboardView {
@@ -79,19 +80,28 @@ export default class Browser extends DashboardView {
       } else {
         this.fetchData(this.props.params.className, this.state.filters);
       }
+      this.setState({
+        ordering: ColumnPreferences.getColumnSort(
+          false,
+          this.context.currentApp.applicationId,
+          this.props.params.className
+        )
+      });
     }
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     if (this.context !== nextContext) {
-      nextProps.schema.dispatch(ActionTypes.FETCH)
-      .then(() => this.fetchCollectionCounts());
       let changes = {
         filters: new List(),
         data: null,
         newObject: null,
         lastMax: -1,
-        ordering: this.state.ordering,
+        ordering: ColumnPreferences.getColumnSort(
+            false,
+            nextContext.currentApp.applicationId,
+            nextProps.params.className
+        ),
         selection: {},
         relation: null
       };
@@ -112,6 +122,9 @@ export default class Browser extends DashboardView {
       if (nextProps.params.className) {
         this.fetchData(nextProps.params.className, nextProps.location.query && nextProps.location.query.filters ? changes.filters : []);
       }
+      nextProps.schema.dispatch(ActionTypes.FETCH)
+      .then(() => this.fetchCollectionCounts());
+
     }
     if (!nextProps.params.className && nextProps.schema.data.get('classes')) {
       this.redirectToFirstClass(nextProps.schema.data.get('classes'));
@@ -130,7 +143,7 @@ export default class Browser extends DashboardView {
         }
         return a.toUpperCase() < b.toUpperCase() ? -1 : 1;
       });
-      history.replaceState(null, this.context.generatePath('browser/' + classes[0]));
+      history.replace(this.context.generatePath('browser/' + classes[0]));
     }
   }
 
@@ -164,7 +177,7 @@ export default class Browser extends DashboardView {
   createClass(className) {
     this.props.schema.dispatch(ActionTypes.CREATE_CLASS, { className }).then(() => {
       this.state.counts[className] = 0;
-      history.pushState(null, this.context.generatePath('browser/' + className));
+      history.push(this.context.generatePath('browser/' + className));
     }).always(() => {
       this.setState({ showCreateClassDialog: false });
     });
@@ -174,7 +187,7 @@ export default class Browser extends DashboardView {
     this.props.schema.dispatch(ActionTypes.DROP_CLASS, { className }).then(() => {
       this.setState({showDropClassDialog: false });
       delete this.state.counts[className];
-      history.pushState(null, this.context.generatePath('browser'));
+      history.push(this.context.generatePath('browser'));
     }, (error) => {
       let msg = typeof error === 'string' ? error : error.message;
       if (msg) {
@@ -308,15 +321,20 @@ export default class Browser extends DashboardView {
     let _filters = JSON.stringify(filters.toJSON());
     let url = `browser/${source}` + (filters.size === 0 ? '' : `?filters=${encodeURIComponent(_filters)}`);
     // filters param change is making the fetch call
-    history.pushState(null, this.context.generatePath(url));
+    history.push(this.context.generatePath(url));
   }
 
   updateOrdering(ordering) {
     let source = this.state.relation || this.props.params.className;
     this.setState({
       ordering: ordering,
-      selection: {},
+      selection: {}
     }, () => this.fetchData(source, this.state.filters));
+    ColumnPreferences.getColumnSort(
+      ordering,
+      this.context.currentApp.applicationId,
+      this.props.params.className
+    );
   }
 
   setRelation(relation) {
@@ -332,7 +350,7 @@ export default class Browser extends DashboardView {
         constraint: 'eq',
         compareTo: id
     }]);
-    history.pushState(null, this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
+    history.push(this.context.generatePath(`browser/${className}?filters=${encodeURIComponent(filters)}`));
   }
 
   updateRow(row, attr, value) {
@@ -561,7 +579,8 @@ export default class Browser extends DashboardView {
             onPointerClick={this.handlePointerClick.bind(this)}
             setRelation={this.setRelation.bind(this)}
             onAddColumn={this.showAddColumn.bind(this)}
-            onAddRow={this.addRow.bind(this)} />
+            onAddRow={this.addRow.bind(this)}
+            onAddClass={this.showCreateClass.bind(this)} />
         );
       }
     }
