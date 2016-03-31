@@ -1,6 +1,9 @@
+[![Build Status](https://travis-ci.org/ephraimkunz/parse-dashboard.svg?branch=master)](https://travis-ci.org/ephraimkunz/parse-dashboard)
+
 # Parse Dashboard
 
 Parse Dashboard is a standalone dashboard for managing your Parse apps. You can use it to manage your [Parse Server](https://github.com/ParsePlatform/parse-server) apps and your apps that are running on [Parse.com](https://Parse.com).
+
 
 # Getting Started
 
