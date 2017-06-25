@@ -3,6 +3,25 @@
 ### NEXT RELEASE
 
 * _Contributing to this repo? Add info about your change here to be included in next release_
+* Feature: When editing Object or Array fields the data is displayed in a prettier format and the textarea is resizable
+* Fix: Display bug on safari when table has empty cells ('')
+* Feature: UI for managing push audiences, thanks to [Davi Macedo](https://github.com/davimacedo)
+
+### 1.0.28
+* Feature: Add ability to search Object columns (#727), thanks to [Samuli Siivinen](https://github.com/ssamuli)
+* Improvement: Added/fixed a filtering option "contains string" for String fields. Case insensitive for now (#728), thanks to [Samuli Siivinen](https://github.com/ssamuli)
+* Improvement: Sort config data according to parameter names (#726), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+
+### 1.0.27
+* Improvement: Show notifications upon success or failure of save and delete objects (#718), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+* Improvement: Moves download option into file editor (#716), thanks to [Natan Rolnik](https://github.com/natanrolnik)
+
+### 1.0.26
+* Improvement: Fixes broken links, thanks to [Arthur Cinader](https://github.com/acinader)
+* Improvement: Title on the add row button, thanks to [Abdul Basit](https://github.com/basitsattar)
+* Improvement: Use slim docker image, thanks to [Tyler Brock](https://github.com/tbrock)
+* Fix: table scrolling on google chrome (#671), thanks to [Jacer Omri](https://github.com/JacerOmri)
+* Various: adds eslint, thanks to [Jeremy Louie](https://github.com/JeremyPlease)
 
 ### 1.0.25
 
