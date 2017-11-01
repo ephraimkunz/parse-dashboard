@@ -76,8 +76,9 @@ module.exports = function(config, options) {
 
     // Serve the configuration.
     app.get('/parse-dashboard-config.json', function(req, res) {
+      let apps = config.apps.map((app) => Object.assign({}, app)); // make a copy
       let response = {
-        apps: config.apps,
+        apps: apps,
         newFeaturesInLatestVersion: newFeaturesInLatestVersion,
       };
 
@@ -101,6 +102,17 @@ module.exports = function(config, options) {
 
       const successfulAuth = authentication && authentication.isAuthenticated;
       const appsUserHasAccess = authentication && authentication.appsUserHasAccessTo;
+      const isReadOnly = authentication && authentication.isReadOnly;
+      // User is full read-only, replace the masterKey by the read-only one
+      if (isReadOnly) {
+        response.apps = response.apps.map((app) => {
+          app.masterKey = app.readOnlyMasterKey;
+          if (!app.masterKey) {
+            throw new Error('You need to provide a readOnlyMasterKey to use read-only features.');
+          }
+          return app;
+        });
+      }
 
       if (successfulAuth) {
         if (appsUserHasAccess) {
@@ -108,7 +120,11 @@ module.exports = function(config, options) {
           // If they didn't supply any app id, user will access all apps
           response.apps = response.apps.filter(function (app) {
             return appsUserHasAccess.find(appUserHasAccess => {
-              return app.appId == appUserHasAccess.appId
+              const isSame = app.appId === appUserHasAccess.appId;
+              if (isSame && appUserHasAccess.readOnly) {
+                app.masterKey = app.readOnlyMasterKey;
+              }
+              return isSame;
             })
           });
         }
