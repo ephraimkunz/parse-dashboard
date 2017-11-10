@@ -2,6 +2,8 @@
 
 # Parse Dashboard
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/parse-community/parse-dashboard.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://img.shields.io/travis/parse-community/parse-dashboard/master.svg?style=flat)](https://travis-ci.org/parse-community/parse-dashboard)
 [![npm version](https://img.shields.io/npm/v/parse-dashboard.svg?style=flat)](https://www.npmjs.com/package/parse-dashboard)
 
@@ -103,7 +105,7 @@ Managing multiple apps from the same dashboard is also possible.  Simply add add
 
 You can manage self-hosted [Parse Server](https://github.com/ParsePlatform/parse-server) apps, *and* apps that are hosted on [Parse.com](http://parse.com/) from the same dashboard. In your config file, you will need to add the `restKey` and `javascriptKey` as well as the other paramaters, which you can find on `dashboard.parse.com`. Set the serverURL to `http://api.parse.com/1`:
 
-```js
+```json
 {
   "apps": [
     {
@@ -154,7 +156,7 @@ To change the app to production, simply set `production` to `true` in your confi
 
 Instead of starting Parse Dashboard with the CLI, you can also run it as an [express](https://github.com/expressjs/express) middleware.
 
-```
+```javascript
 var express = require('express');
 var ParseDashboard = require('parse-dashboard');
 
@@ -180,20 +182,20 @@ httpServer.listen(4040);
 
 If you want to run both [Parse Server](https://github.com/ParsePlatform/parse-server) and Parse Dashboard on the same server/port, you can run them both as express middleware:
 
-```
+```javascript
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var ParseDashboard = require('parse-dashboard');
-
-var allowInsecureHTTP = false
 
 var api = new ParseServer({
 	// Parse Server settings
 });
 
+var options = { allowInsecureHTTP: false };
+
 var dashboard = new ParseDashboard({
 	// Parse Dashboard settings
-}, allowInsecureHTTP);
+}, options);
 
 var app = express();
 
@@ -218,7 +220,7 @@ In order to securely deploy the dashboard without leaking your apps master key, 
 
 The deployed dashboard detects if you are using a secure connection. If you are deploying the dashboard behind a load balancer or front-facing proxy, then the app won't be able to detect that the connection is secure. In this case, you can start the dashboard with the `--trustProxy=1` option (or set the PARSE_DASHBOARD_TRUST_PROXY config var to 1) to rely on the X-Forwarded-* headers for the client's connection security.  This is useful for hosting on services like Heroku, where you can trust the provided proxy headers to correctly determine whether you're using HTTP or HTTPS.  You can also turn on this setting when using the dashboard as [express](https://github.com/expressjs/express) middleware:
 
-```
+```javascript
 var trustProxy = true;
 var dashboard = new ParseDashboard({
   "apps": [
@@ -303,7 +305,7 @@ Start your `parse-server` with
 
 Then in your dashboard configuration:
 
-```
+```javascript
 var trustProxy = true;
 var dashboard = new ParseDashboard({
   "apps": [
