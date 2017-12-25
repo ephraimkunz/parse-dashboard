@@ -13,7 +13,12 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
 * [Getting Started](#getting-started)
 * [Local Installation](#local-installation)
   * [Configuring Parse Dashboard](#configuring-parse-dashboard)
+    * [File](#file)
+    * [Environment variables](#environment-variables)
+      * [Multiple apps](#multiple-apps)
+      * [Single app](#single-app)
   * [Managing Multiple Apps](#managing-multiple-apps)
+  * [App Icon Configuration](#app-icon-configuration)
   * [Other Configuration Options](#other-configuration-options)
 * [Running as Express Middleware](#running-as-express-middleware)
 * [Deploying Parse Dashboard](#deploying-parse-dashboard)
@@ -21,6 +26,11 @@ Parse Dashboard is a standalone dashboard for managing your Parse apps. You can 
   * [Security Considerations](#security-considerations)
     * [Configuring Basic Authentication](#configuring-basic-authentication)
     * [Separating App Access Based on User Identity](#separating-app-access-based-on-user-identity)
+  * [Use Read-Only masterKey](#use-read-only-masterKey)
+    * [Making an app read-only for all users](#making-an-app-read-only-for-all-users)
+    * [Makings users read-only](#makings-users-read-only)
+    * [Making user's apps readOnly](#making-users-apps-readonly)
+  * [Configuring Localized Push Notifications](#configuring-localized-push-notifications)
   * [Run with Docker](#run-with-docker)
 * [Contributing](#contributing)
 
@@ -322,23 +332,42 @@ var dashboard = new ParseDashboard({
 
 ### Makings users read-only
 
+Make sure you specify the `readOnlyMasterKey` for the apps that you want to use read-only feature in "apps" configuration.
 You can mark a user as a read-only user:
 
 ```json
 {
-  "apps": [{"...": "..."}],
+  "apps": [
+    {
+      "appId": "myAppId1",
+      "masterKey": "myMasterKey1",
+      "readOnlyMasterKey": "myReadOnlyMasterKey1",
+      "serverURL": "myURL1",      
+      "port": 4040,
+      "production": true
+    },
+    {
+      "appId": "myAppId2",
+      "masterKey": "myMasterKey2",
+      "readOnlyMasterKey": "myReadOnlyMasterKey2",
+      "serverURL": "myURL2",      
+      "port": 4041,
+      "production": true
+    }
+  ],
   "users": [
-     {
-       "user":"user1",
-       "pass":"pass1",
-       "readOnly": true,
-       "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
-     },
-     {
-       "user":"user2",
-       "pass":"pass2",
-       "apps": [{"appId": "myAppId1"}]
-     }  ]
+    {
+      "user":"user1",
+      "pass":"pass1",
+      "readOnly": true,
+      "apps": [{"appId": "myAppId1"}, {"appId": "myAppId2"}]
+    },
+    {
+      "user":"user2",
+      "pass":"pass2",
+      "apps": [{"appId": "myAppId1"}]
+    }
+  ]
 }
 ```
 
@@ -346,17 +375,29 @@ This way `user1` will have a readOnly access to `myAppId1` and `myAppId2`
 
 ### Making user's apps readOnly
 
+Make sure you specify the `readOnlyMasterKey` for the apps that you want to use read-only feature in "apps" configuration.
 You can give read only access to a user on a per-app basis:
 
 ```json
 {
-  "apps": [{"...": "..."}],
+  "apps": [
+    {
+      "appId": "myAppId1",
+      "masterKey": "myMasterKey1",
+      "readOnlyMasterKey": "myReadOnlyMasterKey1",
+      "serverURL": "myURL",      
+      "port": 4040,
+      "production": true
+    },
+    {"...": "..."}
+  ],
   "users": [
-     {
-       "user":"user1",
-       "pass":"pass1",
-       "apps": [{"appId": "myAppId1", "readOnly": true}, {"appId": "myAppId2"}]
-     } ]
+    {
+      "user":"user",
+      "pass":"pass",
+      "apps": [{"appId": "myAppId", "readOnly": true}, {"appId": "myAppId2"}]
+    }
+  ]
 }
 ```
 
