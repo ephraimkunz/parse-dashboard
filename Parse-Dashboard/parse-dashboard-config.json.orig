@@ -1,0 +1,23 @@
+{
+<<<<<<< HEAD
+  "apps": [
+    {
+      "serverURL": "https://templetrip-server.herokuapp.com/parse",
+      "appId": "JUJurzhFM1UwVK1cY0JHyyJCw17ai5QH1cJ5F880",
+      "masterKey": "u7mJA3zEpVNY6zZ0yVkvkGu8HSlKWJ3bI8HflVzk",
+      "appName": "TempleTrip Server"
+    }
+  ]
+=======
+  "apps": [{
+    "serverURL": "",
+    "appId": "",
+    "masterKey": "",
+    "appName": "",
+    "iconName": "",
+    "primaryBackgroundColor": "",
+    "secondaryBackgroundColor": ""
+  }],
+  "iconsFolder": "icons"
+>>>>>>> 99d6b58a5886a65487a321dd3ada33f64f6bde29
+}
